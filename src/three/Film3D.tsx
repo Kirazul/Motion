@@ -63,7 +63,7 @@ const Scene: React.FC<{t: number; audit: boolean}> = ({t, audit}) => {
       <ClientToken t={t} />
       {audit ? null : (
         <EffectComposer multisampling={4} enableNormalPass={false}>
-          <DepthOfField target={focus} focalLength={0.03} bokehScale={3.2} height={960} />
+          <DepthOfField target={focus} focalLength={0.03} bokehScale={3.2} height={480} />
           <Bloom mipmapBlur intensity={0.9} luminanceThreshold={1.0} luminanceSmoothing={0.15} radius={0.7} />
           <Vignette darkness={0.5} offset={0.3} />
           <Noise premultiply blendFunction={BlendFunction.SOFT_LIGHT} opacity={0.28} />
