@@ -5,7 +5,7 @@ import * as THREE from 'three';
 import {s, e, word, at} from '../lib/time';
 import {k, ease, noise, rnd, sp, clamp, kf} from '../lib/anim';
 import {
-  GRID, heroPose, clientAt, onScreen, inboxN, COMP, STEPPER, stepNode, BUILD, CLICK_AT, CTA_PILL, LOGO, flowSteps, VOID, setLogoDotX,
+  GRID, heroPose, clientAt, onScreen, inboxN, COMP, STEPPER, stepNode, BUILD, CLICK_AT, CTA_PILL, LOGO, flowSteps, VOID, setLogoDotX, ctaPressAt,
 } from './story';
 import {IPhone, IPad, MacBook} from './devices';
 import {Slab, CanvasPlane, slabGeometry} from './common';
@@ -684,8 +684,8 @@ export const ActNotifications: React.FC<{t: number}> = ({t}) => {
 export const ActFinale: React.FC<{t: number}> = ({t}) => {
   if (t < s('p18') - 0.2) return null;
   const pillOut = k(t, s('p19') - 0.1, s('p19') + 0.3, 0, 1, ease.in);
-  const pillA = sp(t, s('p18') + 0.08, 110, 22) * (1 - pillOut);
-  const press = word('p18', 'معانا') + 0.05;
+  const pillA = sp(t, s('p18') + 0.2, 120, 22) * (1 - pillOut);
+  const press = ctaPressAt();
   const pr = k(t, press - 0.06, press, 0, 1) * (1 - k(t, press, press + 0.2, 0, 1));
   const logoA = sp(t, s('p19') + 0.36, 80, 20);
   const tagA = sp(t, s('p19') + 0.75, 90, 20);

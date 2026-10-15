@@ -3,7 +3,7 @@
 // re-times with the voice. Gains are linear; with a VO present everything
 // drops so the voice always leads (SFX ~10-14 dB under the VO).
 import {s, e, word, VO_FILE} from './lib/time';
-import {CLICK_AT, flowSteps} from './three/story';
+import {CLICK_AT, flowSteps, ctaPressAt} from './three/story';
 import {lossSchedule} from './three/acts';
 
 export type Cue = {t: number; file: string; gain: number};
@@ -56,7 +56,7 @@ export const SFX = (): Cue[] => {
     {t: steps[3], file: 'confirm.wav', gain: 0.6},
     ...[0, 1, 2].map((i) => ({t: steps[3] + 0.25 + i * 0.16, file: 'pop.wav', gain: 0.24})),
     {t: s('p18') - 0.05, file: 'whoosh_air.wav', gain: 0.3},
-    {t: word('p18', 'معانا') + 0.04, file: 'tap3.wav', gain: 0.5},
+    {t: ctaPressAt() - 0.01, file: 'tap3.wav', gain: 0.5},
     {t: s('p19') + 0.2, file: 'logo.wav', gain: 0.62},
   ];
   return cues.map((c) => ({...c, gain: c.file === 'bed.wav' ? c.gain : c.gain * g}));

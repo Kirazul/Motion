@@ -80,7 +80,7 @@ export const heroPose = (t: number): Pose => {
   const appear = k(t, s('p03') - 0.3, s('p03') + 0.2, 0, 1);
   const away = k(t, s('p12') - 0.1, s('p12') + 0.7, 0, 1);
   const back = k(t, s('p14') - 0.3, s('p14') + 0.5, 0, 1);
-  const fin = k(t, s('p18') - 0.2, s('p18') + 0.3, 0, 1, ease.in);
+  const fin = k(t, s('p18') - 0.3, s('p18') + 0.18, 0, 1, ease.in);
   const o = Math.min(appear, 1 - away + back, 1 - fin);
   const float: V3 = [noise(t * 0.3, 21) * 0.03, noise(t * 0.35, 23) * 0.04, 0];
   const fr: V3 = [noise(t * 0.25, 31) * 0.012, noise(t * 0.22, 37) * 0.018, 0];
@@ -252,7 +252,7 @@ export const clientAt = (t: number): Client => {
     return {...base, p: f(t), r: heroPose(t).r, flip: 1, scale: 0.4, press, glow: 0.5 + press};
   }
   // 11 - "contact us": it presses the call to action, then becomes the mark
-  const ctaPress = word('p18', 'معانا') + 0.05;
+  const ctaPress = ctaPressAt();
   const f = smoothPath([
     {t: s('p18') - 0.1, p: onHero(s('p18') - 0.1, STICKY_CTA.u, STICKY_CTA.v, 0.4), stop: true},
     {t: ctaPress - 0.15, p: v3.add(CTA_PILL.p, [1.21, 0, 0.5])},
@@ -264,6 +264,9 @@ export const clientAt = (t: number): Client => {
   const rf = k(t, s('p18') - 0.1, ctaPress - 0.1, 0, 1, ease.inOut);
   return {...base, p: f(t), r: lerpR(heroPose(s('p18') - 0.1).r, [0, 0, 0], rf), flip: 1, scale: k(t, s('p18'), s('p18') + 0.4, 0.4, 0.5) * (1 - 0.2 * k(t, s('p19'), s('p19') + 0.5, 0, 1)), press, glow: 0.6 + press};
 };
+
+/** When the client presses "تواصل معانا" (after the pill has fully arrived). */
+export const ctaPressAt = () => word('p18', 'معانا') + 0.32;
 
 /** Steps of the guided flow (act 9) - shared with the screen. */
 export const flowSteps = () => {
