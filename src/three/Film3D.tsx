@@ -1,7 +1,7 @@
 // The 3D film: one canvas, one camera flight. Light comes from a real studio
 // HDRI (Poly Haven, CC0) plus two soft boxes for crisp product highlights.
 // Depth of field follows the client wherever it is.
-import React, {useMemo} from 'react';
+import React from 'react';
 import * as THREE from 'three';
 import {ThreeCanvas} from '@remotion/three';
 import {useThree} from '@react-three/fiber';
@@ -40,8 +40,9 @@ const Studio: React.FC = () => (
 );
 
 const Scene: React.FC<{t: number; audit: boolean}> = ({t, audit}) => {
-  const focus = useMemo(() => new THREE.Vector3(), []);
-  focus.set(...clientAt(t).p);
+  // a fresh array every frame: R3F only re-applies a prop whose value changed,
+  // so a mutated Vector3 would freeze the focus at the first rendered frame
+  const focus = clientAt(t).p;
   return (
     <>
       <color attach="background" args={['#000000']} />
@@ -63,7 +64,7 @@ const Scene: React.FC<{t: number; audit: boolean}> = ({t, audit}) => {
       <ClientToken t={t} />
       {audit ? null : (
         <EffectComposer multisampling={4} enableNormalPass={false}>
-          <DepthOfField target={focus} focalLength={0.03} bokehScale={3.2} height={480} />
+          <DepthOfField target={[focus[0], focus[1], focus[2]]} focalLength={0.03} bokehScale={3.2} height={480} />
           <Bloom mipmapBlur intensity={0.9} luminanceThreshold={1.0} luminanceSmoothing={0.15} radius={0.7} />
           <Vignette darkness={0.5} offset={0.3} />
           <Noise premultiply blendFunction={BlendFunction.SOFT_LIGHT} opacity={0.28} />
