@@ -1,0 +1,33 @@
+{
+  "name": "kalmny-motion",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Kalmny ad creatives: Apple-style motion graphics for the 'clear experience after the click' campaign (Remotion).",
+  "scripts": {
+    "studio": "remotion studio",
+    "render": "remotion render",
+    "still": "remotion still",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@react-three/drei": "^10.0.6",
+    "@react-three/fiber": "^9.1.2",
+    "@react-three/postprocessing": "^3.0.4",
+    "@remotion/cli": "4.0.535",
+    "@remotion/fonts": "4.0.535",
+    "@remotion/media": "4.0.535",
+    "@remotion/three": "^4.0.535",
+    "@types/three": "^0.170.0",
+    "postprocessing": "^6.37.2",
+    "react": "19.1.0",
+    "react-dom": "19.1.0",
+    "remotion": "4.0.535",
+    "three": "^0.170.0"
+  },
+  "devDependencies": {
+    "@fontsource-variable/inter": "5.3.0",
+    "@fontsource/ibm-plex-sans-arabic": "5.3.0",
+    "@types/react": "19.1.0",
+    "typescript": "5.8.3"
+  }
+}

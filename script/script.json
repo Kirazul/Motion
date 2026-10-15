@@ -1,0 +1,60 @@
+{
+  "title": "Kalmny - The Click (clear experience after the click)",
+  "language": "Tunisian Derja with French loanwords",
+  "persona": "Flora",
+  "lead": 0.30,
+  "tail": 2.90,
+  "gapInSentence": 0.18,
+  "gapBetweenSentences": [0.50, 0.50, 0.75, 0.60, 0.50],
+  "sentences": [
+    {
+      "id": "hook",
+      "phrases": [
+        {"id": "p01", "est": 1.70, "text": "قداش من Client خسرتو"},
+        {"id": "p02", "est": 2.00, "text": "من غير ما تعرف علاش وكيفاش؟"}
+      ]
+    },
+    {
+      "id": "problem",
+      "phrases": [
+        {"id": "p03", "est": 2.60, "text": "ممكن الـ Service ولا الـ Produit اللي تقدّم فيه"},
+        {"id": "p04", "est": 1.50, "text": "برشا عباد يلوجو عليه،"},
+        {"id": "p05", "est": 1.70, "text": "أما ما فماش Process واضح"},
+        {"id": "p06", "est": 2.30, "text": "ولا شنوا لازمهم يعملو باش يوصلولك."}
+      ]
+    },
+    {
+      "id": "agitate",
+      "phrases": [
+        {"id": "p07", "est": 1.20, "text": "ممكن حتى تعمل Ad"},
+        {"id": "p08", "est": 1.60, "text": "وتصرف عليها برشا فلوس"},
+        {"id": "p09", "est": 1.80, "text": "والـ Client يضيع في الـ Inbox"},
+        {"id": "p10", "est": 1.20, "text": "ولا يختار حد آخر،"},
+        {"id": "p11", "est": 2.40, "text": "juste خاطر مش عارف الخطوة اللي بعدها."}
+      ]
+    },
+    {
+      "id": "turn",
+      "phrases": [
+        {"id": "p12", "est": 2.20, "text": "قبل ما تصرف برشا فلوس على الـ Ads،"},
+        {"id": "p13", "est": 2.30, "text": "وفّرلو تجربة واضحة بعد الـ Click."}
+      ]
+    },
+    {
+      "id": "solution",
+      "phrases": [
+        {"id": "p14", "est": 1.70, "text": "وخدمتنا إنّا نبنيو تجربة"},
+        {"id": "p15", "est": 2.60, "text": "تتماشى مع الـ Produit / Service اللي تقدّم فيه،"},
+        {"id": "p16", "est": 2.00, "text": "وتخلّي الـ Client فاهم شنوا توفّر"},
+        {"id": "p17", "est": 1.20, "text": "وشنوا لازم يعمل."}
+      ]
+    },
+    {
+      "id": "cta",
+      "phrases": [
+        {"id": "p18", "est": 1.00, "text": "تواصل معانا،"},
+        {"id": "p19", "est": 1.50, "text": "وإحنا نفسرولك أكثر."}
+      ]
+    }
+  ]
+}
