@@ -683,10 +683,11 @@ export const ActNotifications: React.FC<{t: number}> = ({t}) => {
 // ============================================================ 10 - contact, and the mark
 export const ActFinale: React.FC<{t: number}> = ({t}) => {
   if (t < s('p18') - 0.2) return null;
-  const pillA = sp(t, s('p18') + 0.08, 110, 22) * (1 - k(t, s('p19') + 0.1, s('p19') + 0.6, 0, 1, ease.in));
+  const pillOut = k(t, s('p19') - 0.1, s('p19') + 0.3, 0, 1, ease.in);
+  const pillA = sp(t, s('p18') + 0.08, 110, 22) * (1 - pillOut);
   const press = word('p18', 'معانا') + 0.05;
   const pr = k(t, press - 0.06, press, 0, 1) * (1 - k(t, press, press + 0.2, 0, 1));
-  const logoA = sp(t, s('p19') + 0.25, 80, 20);
+  const logoA = sp(t, s('p19') + 0.36, 80, 20);
   const tagA = sp(t, s('p19') + 0.75, 90, 20);
   const urlA = sp(t, s('p19') + 1.1, 90, 20);
   const sweep = k(t, s('p19') + 0.6, s('p19') + 2.0, -0.3, 1.3, ease.inOut);
@@ -697,7 +698,7 @@ export const ActFinale: React.FC<{t: number}> = ({t}) => {
         h={0.95}
         d={0.12}
         r={0.47}
-        position={v3.add(CTA_PILL.p, [0, (1 - pillA) * -0.4, -pr * 0.05])}
+        position={v3.add(CTA_PILL.p, [0, (1 - pillA) * -0.4 - pillOut * 0.5, -pr * 0.05])}
         scale={(0.92 + 0.08 * pillA) * (1 - pr * 0.04)}
         opacity={pillA}
         color="#123B38"

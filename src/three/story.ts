@@ -326,7 +326,7 @@ const camKeys = () => {
     {t: e('p15'), c: shot(0, BUILD.mac.p[1] + 4.25, BUILD.mac.p[2] - 0.6, 24.6, {dx: -0.8, zt: -1})},
     {t: s('p16') + 0.8, c: shot(BUILD.phone.p[0] - 0.4, BUILD.phone.p[1] + 0.4 + PH, BUILD.phone.p[2] + 0.6, 14.6, {dx: -0.6})},
     {t: e('p17') + 0.2, c: shot(BUILD.phone.p[0] - 0.4, BUILD.phone.p[1] + 0.4 + PH, BUILD.phone.p[2] + 0.6, 14.2, {dx: -0.8})},
-    {t: s('p18') + 0.6, c: centred(0, CTA_PILL.p[1] + 0.5, CTA_PILL.p[1] - 0.5, CTA_PILL.p[2], 11.5)},
+    {t: s('p18') + 0.6, c: centred(0, CTA_PILL.p[1] + 0.5, CTA_PILL.p[1] - 0.5, CTA_PILL.p[2], 14.5)},
     {t: s('p19') + 0.6, c: centred(0, LOGO.p[1] + 0.55, LOGO.p[1] - 2.05, LOGO.p[2], 11.4)},
     {t: e('p19') + 3.5, c: centred(0, LOGO.p[1] + 0.55, LOGO.p[1] - 2.05, LOGO.p[2], 10.8)},
   ];
