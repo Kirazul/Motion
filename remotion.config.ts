@@ -5,9 +5,8 @@ import {Config} from '@remotion/cli/config';
 Config.setVideoImageFormat('jpeg');
 Config.setJpegQuality(96);
 Config.setOverwriteOutput(true);
-Config.setCodec('h264');
-Config.setCrf(14);
-Config.setPixelFormat('yuv420p');
+// codec / CRF are passed per render (tools/render_final.sh) so that audio-only
+// passes (wav) are not handed video-only options.
 if (process.env.REMOTION_BROWSER) {
   Config.setBrowserExecutable(process.env.REMOTION_BROWSER);
 }

@@ -16,7 +16,7 @@ for ((a=0; a<total; a+=chunk)); do
   f=$(printf "%s/part%03d.mp4" "$parts" "$i")
   if [[ ! -s "$f" ]]; then
     echo "[$(date +%T)] $comp frames $a-$b -> $f"
-    npx remotion render src/index.ts "$comp" "$f.tmp.mp4" --frames="$a-$b" --muted --codec=h264 --crf=16 --x264-preset=slow "${common[@]}" >"$f.log" 2>&1
+    npx remotion render src/index.ts "$comp" "$f.tmp.mp4" --frames="$a-$b" --muted --codec=h264 --crf=16 --x264-preset=slow --pixel-format=yuv420p "${common[@]}" >"$f.log" 2>&1
     mv "$f.tmp.mp4" "$f"
   fi
   i=$((i+1))
