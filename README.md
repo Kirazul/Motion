@@ -9,6 +9,10 @@ Tunisian Derja kinetic type, and synthesized sound design.
 - Creative direction, script analysis, act-by-act plan: [docs/CREATIVE.md](docs/CREATIVE.md)
 - Flora voice-over direction and timing: [docs/VO_FLORA.md](docs/VO_FLORA.md)
 - Renders: [`renders/`](renders/)
+  - `kalmny-the-click-9x16.mp4` - master, 1080x1920, 60 fps, 42.9 s, H.264 High
+    (broadcast range, BT.709), AAC 320 kbps, -15 LUFS / -1.4 dBFS peak, 25.8 MB.
+    Sound design + music bed, no voice yet (see "Timing follows the voice").
+  - `kalmny-the-click-4x5.mp4` - feed cut, 1080x1350 (rendering; same spec)
 
 ## Formats
 

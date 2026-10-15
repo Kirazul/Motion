@@ -27,6 +27,19 @@ if [[ ! -s "$parts/audio.wav" ]]; then
   mv "$parts/audio.tmp.wav" "$parts/audio.wav"
 fi
 ls "$parts"/part*.mp4 | sed "s|^|file '$(pwd)/|; s|$|'|" > "$parts/list.txt"
-ffmpeg -v error -y -f concat -safe 0 -i "$parts/list.txt" -i "$parts/audio.wav" -map 0:v -map 1:a \
-  -c:v copy -c:a aac -b:a 320k -movflags +faststart -shortest "renders/$name.mp4"
+# delivery: broadcast-range yuv420p (players and Meta expect TV range) and
+# loudness-normalised sound (-15 LUFS integrated, true peak -1.5 dBTP; Reels
+# play at about -14). Two-pass loudnorm: measure, then apply linearly.
+ffmpeg -v error -y -f concat -safe 0 -i "$parts/list.txt" -c copy "$parts/video.mp4"
+meas=$(ffmpeg -hide_banner -nostats -i "$parts/audio.wav" -af loudnorm=I=-15:TP=-1.5:LRA=11:print_format=json -f null - 2>&1 | sed -n '/^{/,/^}/p')
+mi=$(echo "$meas" | python3 -c "import json,sys;d=json.load(sys.stdin);print(d['input_i'])")
+mtp=$(echo "$meas" | python3 -c "import json,sys;d=json.load(sys.stdin);print(d['input_tp'])")
+mlra=$(echo "$meas" | python3 -c "import json,sys;d=json.load(sys.stdin);print(d['input_lra'])")
+mth=$(echo "$meas" | python3 -c "import json,sys;d=json.load(sys.stdin);print(d['input_thresh'])")
+off=$(echo "$meas" | python3 -c "import json,sys;d=json.load(sys.stdin);print(d['target_offset'])")
+ffmpeg -v error -y -i "$parts/video.mp4" -i "$parts/audio.wav" -map 0:v -map 1:a \
+  -vf "scale=in_range=full:out_range=tv,format=yuv420p" -color_range tv -colorspace bt709 -color_primaries bt709 -color_trc bt709 \
+  -c:v libx264 -preset slow -crf 16 -profile:v high -level 5.1 -r 60 \
+  -af "loudnorm=I=-15:TP=-1.5:LRA=11:measured_I=$mi:measured_TP=$mtp:measured_LRA=$mlra:measured_thresh=$mth:offset=$off:linear=true,aresample=48000" \
+  -c:a aac -b:a 320k -movflags +faststart -shortest "renders/$name.mp4"
 echo "[$(date +%T)] done -> renders/$name.mp4"
