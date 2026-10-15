@@ -23,7 +23,7 @@ for ((a=0; a<total; a+=chunk)); do
 done
 if [[ ! -s "$parts/audio.wav" ]]; then
   echo "[$(date +%T)] audio"
-  npx remotion render src/index.ts "$comp" "$parts/audio.tmp.wav" --codec=wav "${common[@]}" >"$parts/audio.log" 2>&1
+  npx remotion render src/index.ts "$comp" "$parts/audio.tmp.wav" --codec=wav --props='{"showHeadlines":false,"mode":"audio"}' "${common[@]}" >"$parts/audio.log" 2>&1
   mv "$parts/audio.tmp.wav" "$parts/audio.wav"
 fi
 ls "$parts"/part*.mp4 | sed "s|^|file '$(pwd)/|; s|$|'|" > "$parts/list.txt"
