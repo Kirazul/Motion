@@ -128,8 +128,17 @@ banding in the black (grain dithers it), bokeh discs smooth. Confirm delivery
 files after encode with `ffprobe` (2160×3840 / yuv420p10le on the master,
 BT.709 tags, 60 fps) — `render_final.sh` prints this automatically.
 
-Render-time expectation (software GL, 2 cores): ~20–25 s per 4K still; a full
-43 s 4K render is an overnight job on a small CPU box and a coffee break on
-anything with a GPU (`--gl=angle` / a real display server). The 1080
-compositions cost the same as 4K internally by design — that is the price of
-never rendering below master quality. Chunking makes every render resumable.
+Render-time expectation, measured on the current build:
+
+| Machine | Per frame (2160×3840) | Full 43 s film |
+|---|---|---|
+| 2 CPU cores, software GL (`GL=swangle`) | ~14 s | ~10 h (overnight; chunked + resumable) |
+| Any discrete/Apple-silicon GPU (`GL=angle`) | ~0.3–1 s | ~15–45 min |
+
+Software GL rasterises 8.3 MP × the HDR composer on CPU — that is the whole
+story; the same code on a GPU is a different world. Production renders
+belong on a GPU machine (or Remotion Lambda with the same compositions).
+A 2160-wide page wants ~2–4 GB RAM: keep `CONCURRENCY` at 1–2 for 4K on
+small machines (higher values fail with out-of-memory screenshots, by
+design of the safety limits, not silently). The 1080 compositions cost the
+same as 4K internally — the price of never rendering below master quality.

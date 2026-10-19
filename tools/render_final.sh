@@ -23,7 +23,13 @@
 #   CRF_MASTER=14 PRESET_MASTER=slow   HEVC master encode
 #   SHUTTER=1             synthesise a 180-degree shutter (2-frame temporal
 #                         mix) - cinematic motion blur on the continuous take
-#   CHUNK=300 CONCURRENCY=2        chunked rendering
+#   CHUNK=300 CONCURRENCY=2        chunked rendering (fresh browser per chunk,
+#                         which also bounds page-memory growth). A 2160-wide
+#                         page wants ~2-4 GB RAM: on small machines use
+#                         CONCURRENCY=1 and CHUNK=30-60 for the 4K comps.
+#   GL=swangle            WebGL renderer. swangle = software GL (any machine,
+#                         slow: ~14 s/frame at 4K on 2 CPU cores). On a machine
+#                         WITH a GPU use GL=angle (typically 0.3-1 s/frame).
 # Set REMOTION_BROWSER to a local Chromium if Remotion cannot download one.
 set -euo pipefail
 cd "$(dirname "$0")/.."
@@ -31,7 +37,11 @@ comp="$1"; name="$2"; chunk="${CHUNK:-300}"
 command -v ffmpeg >/dev/null || { echo "error: ffmpeg not on PATH (needed for the final encode)"; exit 1; }
 parts="renders/parts/$name"; mkdir -p "$parts"
 total=$(python3 -c "import json,math;print(math.ceil(json.load(open('src/timeline.json'))['duration']*60))")
-common=(--gl=swangle --concurrency="${CONCURRENCY:-2}" --timeout=300000)
+# --media-cache-size: by default @remotion/media reserves 50% of RAM for its
+# decode cache (1.5 GB on a 4 GB box) - headroom a 2160-wide WebGL page needs
+# far more. The SFX set is a few MB; 256 MB is generous and keeps 4K pages
+# alive on small machines.
+common=(--gl="${GL:-swangle}" --concurrency="${CONCURRENCY:-2}" --timeout=300000 --media-cache-size-in-bytes=268435456)
 i=0
 for ((a=0; a<total; a+=chunk)); do
   b=$(( a + chunk - 1 )); (( b >= total )) && b=$(( total - 1 ))
@@ -59,7 +69,9 @@ mtp=$(echo "$meas" | python3 -c "import json,sys;d=json.load(sys.stdin);print(d[
 mlra=$(echo "$meas" | python3 -c "import json,sys;d=json.load(sys.stdin);print(d['input_lra'])")
 mth=$(echo "$meas" | python3 -c "import json,sys;d=json.load(sys.stdin);print(d['input_thresh'])")
 off=$(echo "$meas" | python3 -c "import json,sys;d=json.load(sys.stdin);print(d['target_offset'])")
-afilter="loudnorm=I=-15:TP=-1.5:LRA=11:measured_I=$mi:measured_TP=$mtp:measured_LRA=$mlra:measured_thresh=$mth:offset=$off:linear=true,aresample=48000"
+# out_channel_layout: loudnorm can hand back an unspecified channel layout
+# that some ffmpeg builds refuse to feed to the AAC encoder; pin it.
+afilter="loudnorm=I=-15:TP=-1.5:LRA=11:measured_I=$mi:measured_TP=$mtp:measured_LRA=$mlra:measured_thresh=$mth:offset=$off:linear=true,aresample=48000:out_channel_layout=stereo"
 
 # Video filter chains. Broadcast-range yuv420p (players and Meta expect TV
 # range), BT.709 tagged. Downscaling (DELIVERY_HEIGHT) is Lanczos - the
