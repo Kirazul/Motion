@@ -7,7 +7,12 @@
     "studio": "remotion studio",
     "render": "remotion render",
     "still": "remotion still",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "render:4k": "bash tools/render_final.sh Ad-9x16-4K kalmny-the-click-9x16-4k",
+    "render:4k:feed": "bash tools/render_final.sh Ad-4x5-4K kalmny-the-click-4x5-4k",
+    "render:hd": "bash tools/render_final.sh Ad-9x16 kalmny-the-click-9x16",
+    "render:hd:feed": "bash tools/render_final.sh Ad-4x5 kalmny-the-click-4x5",
+    "audit": "python3 tools/audit_layout.py --step 0.1"
   },
   "dependencies": {
     "@react-three/drei": "^10.0.6",

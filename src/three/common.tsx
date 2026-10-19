@@ -3,7 +3,8 @@
 import React, {useMemo} from 'react';
 import * as THREE from 'three';
 import {useThree} from '@react-three/fiber';
-import {Ctx, useCanvasTexture, useRadialTexture, fillRR, text, icon, measure, vgrad} from './ui2d';
+import {Ctx, useCanvasTexture, useRadialTexture, useTexScale, fillRR, text, icon, measure, vgrad} from './ui2d';
+import {capCanvas} from '../lib/quality';
 import type {V3} from './path';
 
 /** The client: an emissive core, a soft bloom halo, and a real light. */
@@ -20,7 +21,7 @@ export const Orb: React.FC<{p: V3; r?: number; intensity?: number; light?: numbe
   return (
     <group position={p}>
       <mesh>
-        <sphereGeometry args={[r, 48, 48]} />
+        <sphereGeometry args={[r, 64, 64]} />
         <meshBasicMaterial color={new THREE.Color(color).multiplyScalar(2.2 * intensity + 0.4)} toneMapped={false} transparent opacity={Math.min(1, intensity * 1.5)} />
       </mesh>
       <sprite scale={[r * 7, r * 7, 1]}>
@@ -45,8 +46,10 @@ export const CanvasPlane: React.FC<{
   renderOrder?: number;
   drawKey?: string;
 }> = ({w, h, px = 300, draw, position, rotation, opacity = 1, emissive = 1, billboard, renderOrder, drawKey}) => {
-  const W = Math.round(w * px);
-  const H = Math.round(h * px);
+  // `px` is authored for a 1080-wide frame; scale it to the real buffer so
+  // the plane is never upscaled on a master render (lib/quality.ts).
+  const q = useTexScale();
+  const [W, H] = capCanvas(Math.round(w * px * q), Math.round(h * px * q));
   const tex = useCanvasTexture(W, H, (c) => draw(c, W, H), drawKey);
   const camera = useThree((s) => s.camera);
   const quat = billboard ? camera.quaternion.clone() : undefined;
@@ -144,8 +147,11 @@ export const slabGeometry = (w: number, h: number, d: number, r: number) => {
     bevelEnabled: true,
     bevelThickness: bevel,
     bevelSize: bevel,
-    bevelSegments: 5,
-    curveSegments: 24,
+    // The client token fills a fifth of the frame height in the void shot:
+    // at 4K that is ~800 px across, where 24-segment corners facet. 48/8
+    // keeps every silhouette and bevel highlight perfectly smooth.
+    bevelSegments: 8,
+    curveSegments: 48,
   });
   g.translate(0, 0, -(d - bevel * 2) / 2);
   g.computeVertexNormals();
