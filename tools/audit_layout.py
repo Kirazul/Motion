@@ -33,7 +33,7 @@ def render(comp: str, frames: list[int], dest: Path, scale: float):
     cmd = [
         "npx", "remotion", "render", "src/index.ts", comp, str(dest),
         f"--frames={','.join(map(str, frames))}", "--image-format=png", "--sequence",
-        "--gl=swangle", "--concurrency=3", "--timeout=300000", f"--scale={scale}",
+        "--gl=swangle", f"--concurrency={min(3, os.cpu_count() or 1)}", "--timeout=300000", f"--scale={scale}",
     ]
     r = subprocess.run(cmd, cwd=ROOT, capture_output=True, text=True)
     if r.returncode != 0:

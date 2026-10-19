@@ -19,6 +19,12 @@ export const Stage: React.FC<{children: React.ReactNode}> = ({children}) => {
           height: STAGE.h,
           transformOrigin: '0 0',
           transform: `scale(${scale})`,
+          // Type is vector, so the 2x scale of a 4K composition rasterises
+          // natively - these just ask the browser for its best rasteriser:
+          // optical-size masters of Inter at headline sizes, no faux bold.
+          WebkitFontSmoothing: 'antialiased',
+          textRendering: 'optimizeLegibility',
+          fontOpticalSizing: 'auto',
         }}
       >
         {children}

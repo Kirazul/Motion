@@ -3,7 +3,21 @@
 // light, depth of field and bloom as everything else.
 import * as THREE from 'three';
 import {useMemo} from 'react';
+import {useThree} from '@react-three/fiber';
 import {ICONS, FILLED} from './icons';
+import {texScaleFor} from '../lib/quality';
+
+/**
+ * How much denser than the authored (1080-wide) baseline canvas textures must
+ * be for the current drawing buffer, so screens stay native-sharp at any
+ * output size (see lib/quality.ts). Lives here because every texture in the
+ * film is born in this file's hooks.
+ */
+export const useTexScale = (): number => {
+  const gl = useThree((s) => s.gl);
+  const size = useThree((s) => s.size);
+  return texScaleFor(size.width * gl.getPixelRatio());
+};
 
 export const F = {
   ui: '"InterX", "PlexArabic", sans-serif',
@@ -116,17 +130,22 @@ export const icon = (c: Ctx, name: string, cx: number, cy: number, size: number,
 /** A canvas + texture. Redrawn only when `key` changes (pass a string that
  *  encodes the visible state); without a key it is redrawn every frame. */
 export const useCanvasTexture = (w: number, h: number, draw: (c: Ctx) => void, key?: string) => {
+  // Screens are viewed at grazing angles more often than head-on: give every
+  // texture the renderer's full anisotropic filtering so UI type stays
+  // legible when a phone turns away from camera.
+  const maxAniso = useThree((s) => s.gl.capabilities.getMaxAnisotropy());
   const {canvas, tex} = useMemo(() => {
     const cv = document.createElement('canvas');
     cv.width = w;
     cv.height = h;
     const t = new THREE.CanvasTexture(cv);
     t.colorSpace = THREE.SRGBColorSpace;
-    t.anisotropy = 8;
+    t.anisotropy = Math.min(16, maxAniso);
     t.generateMipmaps = true;
     t.minFilter = THREE.LinearMipmapLinearFilter;
+    t.magFilter = THREE.LinearFilter;
     return {canvas: cv, tex: t, last: {key: '\u0000'}};
-  }, [w, h]);
+  }, [w, h, maxAniso]);
   const memo = (tex.userData.lastKey as string | undefined) ?? '\u0000';
   if (key === undefined || key !== memo) {
     const c = canvas.getContext('2d')!;
@@ -139,8 +158,9 @@ export const useCanvasTexture = (w: number, h: number, draw: (c: Ctx) => void, k
   return tex;
 };
 
-/** Soft radial sprite texture (for glows, bokeh, light fields). */
-export const useRadialTexture = (inner = 'rgba(255,255,255,1)', outer = 'rgba(255,255,255,0)', size = 256) =>
+/** Soft radial sprite texture (for glows, bokeh, light fields). 512 px keeps
+ *  the falloff free of visible steps when a halo covers half a 4K frame. */
+export const useRadialTexture = (inner = 'rgba(255,255,255,1)', outer = 'rgba(255,255,255,0)', size = 512) =>
   useMemo(() => {
     const cv = document.createElement('canvas');
     cv.width = size;
